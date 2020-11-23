@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	worldclock "github.com/calanco/worldclock/internal"
+	"github.com/calanco/worldclock/internal/utils"
 	"github.com/gosuri/uilive"
 )
 
@@ -25,7 +25,7 @@ func main() {
 	writer.Start()
 	defer writer.Stop()
 
-	ch := make(chan worldclock.PrintFields, len(capitalCities))
+	ch := make(chan utils.PrintFields, len(capitalCities))
 
 	// Mapping capitals with their last revealed time
 	out := make(map[string]string)
@@ -33,7 +33,7 @@ func main() {
 	for {
 		// Triggering concurrent goroutines to get the times of all requested capitals
 		for _, capital := range capitalCities {
-			go worldclock.GetTime(capital, ch)
+			go utils.GetTime(capital, ch)
 		}
 
 		// Waiting for the channel to be empty and checking if the news are valid times
@@ -45,7 +45,7 @@ func main() {
 			}
 		}
 
-		worldclock.PrintOutput(out, writer)
+		utils.PrintOutput(out, writer)
 		time.Sleep(2 * time.Second)
 	}
 
