@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"encoding/json"
@@ -19,13 +19,13 @@ type CityClock struct {
 
 // PrintFields is a struct used as a channel to model the output to print
 type PrintFields struct {
-	capital  string
-	dateTime string
+	Capital  string
+	DateTime string
 }
 
-// getTime writes the current time of capital to the channel
+// GetTime writes the current time of capital to the channel
 // worldtimeapi.org is queried
-func getTime(capital string, ch chan<- PrintFields) {
+func GetTime(capital string, ch chan<- PrintFields) {
 
 	reply, err := http.Get(fmt.Sprintf("http://worldtimeapi.org/api/timezone/%s", capital))
 	if err != nil {
@@ -55,11 +55,11 @@ func getTime(capital string, ch chan<- PrintFields) {
 
 	dateTime := string(cc.DateTime[strings.Index(cc.DateTime, "T")+1 : strings.Index(cc.DateTime, "T")+6])
 
-	ch <- PrintFields{capital: capital, dateTime: dateTime}
+	ch <- PrintFields{Capital: capital, DateTime: dateTime}
 }
 
-// printOutput generates an ASCII table on the fly
-func printOutput(out map[string]string, writer *uilive.Writer) {
+// PrintOutput generates an ASCII table on the fly
+func PrintOutput(out map[string]string, writer *uilive.Writer) {
 	keys := make([]string, 0, len(out))
 
 	for k := range out {

@@ -3,7 +3,9 @@ package main
 import (
 	"flag"
 	"strings"
+	"time"
 
+	worldclock "github.com/calanco/worldclock/internal"
 	"github.com/gosuri/uilive"
 )
 
@@ -23,7 +25,7 @@ func main() {
 	writer.Start()
 	defer writer.Stop()
 
-	ch := make(chan PrintFields, len(capitalCities))
+	ch := make(chan worldclock.PrintFields, len(capitalCities))
 
 	// Mapping capitals with their last revealed time
 	out := make(map[string]string)
@@ -31,19 +33,20 @@ func main() {
 	for {
 		// Triggering concurrent goroutines to get the times of all requested capitals
 		for _, capital := range capitalCities {
-			go getTime(capital, ch)
+			go worldclock.GetTime(capital, ch)
 		}
 
 		// Waiting for the channel to be empty and checking if the news are valid times
 		for i := 0; i < len(capitalCities); i++ {
 			tempPf := <-ch
 
-			if tempPf.dateTime != "" {
-				out[tempPf.capital] = tempPf.dateTime
+			if tempPf.DateTime != "" {
+				out[tempPf.Capital] = tempPf.DateTime
 			}
 		}
 
-		printOutput(out, writer)
+		worldclock.PrintOutput(out, writer)
+		time.Sleep(2 * time.Second)
 	}
 
 }
