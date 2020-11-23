@@ -17,4 +17,5 @@ The following command:
     go run main.go --capitals Europe/Berlin,Europe/Rome,America/New_York
 ```
 produces the following output:
+
 ![alt Output example](/example.png)
