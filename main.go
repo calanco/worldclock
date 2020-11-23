@@ -12,7 +12,7 @@ import (
 var capitals string
 
 func init() {
-	flag.StringVar(&capitals, "capitals", "", "Insert the capitals to get time from [Continent/Capital1, Continent/Capital2, etc]")
+	flag.StringVar(&capitals, "capitals", "", "Insert the capitals to get time from [Continent1/Capital1, Continent2/Capital2, etc]")
 	flag.Parse()
 }
 
