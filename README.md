@@ -11,6 +11,8 @@ That parameter is a comma separated list of cities expressed as `Continent/City`
     Insert the cities to get time from [Continent1/City1, Continent2/City2, etc]
 ```
 
+Click [here](http://worldtimeapi.org/api/timezone) for the list of all possible cities to get the current time from.
+
 ### Example
 The following command:
 ```
