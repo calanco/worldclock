@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/gosuri/uilive"
 	"github.com/kataras/tablewriter"
@@ -26,11 +27,14 @@ type PrintFields struct {
 // GetTime writes the current time of city to the channel
 // worldtimeapi.org is queried
 func GetTime(city string, ch chan<- PrintFields) {
+	timeout := time.Duration(5 * time.Second)
+	client := http.Client{
+		Timeout: timeout,
+	}
 
-	reply, err := http.Get(fmt.Sprintf("http://worldtimeapi.org/api/timezone/%s", city))
+	reply, err := client.Get(fmt.Sprintf("http://worldtimeapi.org/api/timezone/%s", city))
 	if err != nil {
 		ch <- PrintFields{}
-		reply.Body.Close()
 		return
 	}
 	defer reply.Body.Close()
