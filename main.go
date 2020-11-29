@@ -9,39 +9,39 @@ import (
 	"github.com/gosuri/uilive"
 )
 
-var capitals string
+var cities string
 
 func init() {
-	flag.StringVar(&capitals, "capitals", "", "Insert the capitals to get time from [Continent1/Capital1, Continent2/Capital2, etc]")
+	flag.StringVar(&cities, "cities", "", "Insert the cities to get time from [Continent1/City1, Continent2/City2, etc]")
 	flag.Parse()
 }
 
 func main() {
-	// Split capitals parameter to get a list of the capitals
-	capitalCities := strings.Split(capitals, ",")
+	// Split cities parameter to get a list of the cities
+	cs := strings.Split(cities, ",")
 
 	// Create a writer to refresh the printed output
 	writer := uilive.New()
 	writer.Start()
 	defer writer.Stop()
 
-	ch := make(chan utils.PrintFields, len(capitalCities))
+	ch := make(chan utils.PrintFields, len(cs))
 
-	// Mapping capitals with their last revealed time
+	// Mapping cities with their last revealed time
 	out := make(map[string]string)
 
 	for {
-		// Triggering concurrent goroutines to get the times of all requested capitals
-		for _, capital := range capitalCities {
-			go utils.GetTime(capital, ch)
+		// Triggering concurrent goroutines to get the times of all requested cities
+		for _, c := range cs {
+			go utils.GetTime(c, ch)
 		}
 
 		// Waiting for the channel to be empty and checking if the news are valid times
-		for i := 0; i < len(capitalCities); i++ {
+		for i := 0; i < len(cs); i++ {
 			tempPf := <-ch
 
 			if tempPf.DateTime != "" {
-				out[tempPf.Capital] = tempPf.DateTime
+				out[tempPf.City] = tempPf.DateTime
 			}
 		}
 

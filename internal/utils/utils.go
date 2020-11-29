@@ -19,15 +19,15 @@ type CityClock struct {
 
 // PrintFields is a struct used as a channel to model the output to print
 type PrintFields struct {
-	Capital  string
+	City     string
 	DateTime string
 }
 
-// GetTime writes the current time of capital to the channel
+// GetTime writes the current time of city to the channel
 // worldtimeapi.org is queried
-func GetTime(capital string, ch chan<- PrintFields) {
+func GetTime(city string, ch chan<- PrintFields) {
 
-	reply, err := http.Get(fmt.Sprintf("http://worldtimeapi.org/api/timezone/%s", capital))
+	reply, err := http.Get(fmt.Sprintf("http://worldtimeapi.org/api/timezone/%s", city))
 	if err != nil {
 		ch <- PrintFields{}
 		reply.Body.Close()
@@ -55,7 +55,7 @@ func GetTime(capital string, ch chan<- PrintFields) {
 
 	dateTime := string(cc.DateTime[strings.Index(cc.DateTime, "T")+1 : strings.Index(cc.DateTime, "T")+6])
 
-	ch <- PrintFields{Capital: capital, DateTime: dateTime}
+	ch <- PrintFields{City: city, DateTime: dateTime}
 }
 
 // PrintOutput generates an ASCII table on the fly
@@ -68,7 +68,7 @@ func PrintOutput(out map[string]string, writer *uilive.Writer) {
 	sort.Strings(keys)
 
 	table := tablewriter.NewWriter(writer)
-	table.SetHeader([]string{"Capital City", "Time"})
+	table.SetHeader([]string{"City", "Time"})
 
 	for _, k := range keys {
 		table.Append([]string{k, out[k]})
